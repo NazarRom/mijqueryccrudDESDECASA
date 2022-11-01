@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipo</title>
+</head>
+<body>
+    <header id="menu"></header>
+    <h1 id="NameEquipo"></h1>
+    <img style="width:300px; height:400px" src="" id="ImagenEquipo"/>
+    <h2 id="ChampionsEquipo"></h2>
+    <p id="DatosEquipo"></p>
+    <div>
+        <a id="botonJugadores">Jugadores</a>
+        <a id="botonVolver">Volver</a>
+    </div>
+
+
+    <script src="./js/jquery-3.6.1.min.js"></script>
+    <script>
+        //importo la url que uso
+         var urlChampions = "https://apichampions.azurewebsites.net/";
+        //document ready para cargar todo cuando el documneto este listo
+        $(document).ready(function(){
+            //importo el menu
+            $("#menu").load("menucrud.html");
+            loadEquipo();
+        })
+        //recupero los datos de la url
+        const parameters = new URLSearchParams(window.location.search);
+        function loadEquipo() {
+            //para localizar el parametro 
+            var idEquipo = parameters.get("idEquipo");
+            var request = "/api/Equipos/" + idEquipo;
+            $.ajax({
+                "url": urlChampions + request,
+                "method" : "GET",
+                "dataType": "JSON",
+                success : function(data) {
+                    //como esto es jquiery tengo quie meter todos los datos en sus contenedores
+                    $("#NameEquipo").text(data.nombre);
+                    $("#ImagenEquipo").attr("src",data.imagen);
+                    $("#ChampionsEquipo").text("Champions " + data.champions)
+                    $("#DatosEquipo").text(data.descripcion);
+
+                    $("#botonJugadores").attr("href","jugadores.html?idEquipo=" + idEquipo + "&NameEquipo=" + data.nombre)
+                    $("#botonVolver").attr("href","home.html");
+                }
+            })
+        }
+    </script>
+</body>
+</html>
